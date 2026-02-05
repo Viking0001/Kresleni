@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Kresleni.MainWindow"
+        Title="Kresleni">
+    
+    
+    <Window.Styles>
+
+        <Style Selector="Button.tool">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+
+
+        <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="WhiteSmoke"/>
+        </Style>
+
+        <Style Selector="Button:pressed">
+            <Setter Property="Background" Value="#DDD"/>
+        </Style>
+
+    </Window.Styles>
+    
+    <Grid RowDefinitions="Auto,*" >
+        <Border Grid.Row="0"
+                Background="Red"
+                Padding="10">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Clear" Classes="tool" />
+            </StackPanel>
+        </Border>
+        
+        <Image Grid.Row="1" Name="Img"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               Stretch="None"/>
+    </Grid>
+    
+</Window>

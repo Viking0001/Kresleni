@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using System;
 using System.Collections.Generic;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace Kresleni;
 
@@ -14,7 +15,10 @@ public class DrawingController
     private List<Line> _lines = new List<Line>();
     private Line _focusLine;
     private int _widthLine;
-    private bool _constraintMode;
+
+                    
+    public bool _constraintMode = false;
+    public bool _dashedMode = false;
     
 
 
@@ -23,7 +27,6 @@ public class DrawingController
         _canvas = canvas;
         _drav = false;
         _widthLine = 5;
-        _constraintMode = false;
     }
 
     public void PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -31,12 +34,13 @@ public class DrawingController
         _drav = true;
         var start = (e.GetPosition(_canvas.Image).X, e.GetPosition(_canvas.Image).Y);
         _focusLine = new Line(start,start, _widthLine);
+        _focusLine.DashedMode = _dashedMode;
+        _focusLine.ConstraintMode = _constraintMode;
     }
     
     public void PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         _drav = false;
-        if (_constraintMode) _focusLine.End = _focusLine.ConsttraintEnd();
         _lines.Add(_focusLine);
     }
     
@@ -46,7 +50,7 @@ public class DrawingController
         {
             RedrawAllLines();
             _focusLine.End = (e.GetPosition(_canvas.Image).X, e.GetPosition(_canvas.Image).Y);
-            _canvas.DravLine(_focusLine, _constraintMode);
+            _canvas.DravLine(_focusLine);
             _canvas.UpdateUI();
         }
     }
@@ -60,15 +64,44 @@ public class DrawingController
         }
     }
 
+    public void Clear()
+    {
+        _canvas.Clear();
+        _canvas.UpdateUI();
+        _lines.Clear();
+    }
+
 
     public void OnKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
         {
             _constraintMode = true;
-            RedrawAllLines();
-            _canvas.DravLine(_focusLine, _constraintMode);
-            _canvas.UpdateUI();
+            if (_drav)
+            {
+                _focusLine.ConstraintMode = true;
+                RedrawAllLines();
+                _canvas.DravLine(_focusLine);
+                _canvas.UpdateUI();
+            }
+        }
+        
+        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+        {
+            _dashedMode = true;
+            if (_drav)
+            {
+                _focusLine.DashedMode = true;
+                RedrawAllLines();
+                _canvas.DravLine(_focusLine);
+                _canvas.UpdateUI();
+            }
+        }
+        
+
+        if (e.Key == Key.C)
+        {
+            Clear();
         }
     }
 
@@ -77,9 +110,28 @@ public class DrawingController
         if (e.Key == Key.LeftShift || e.Key == Key.RightShift)
         {
             _constraintMode = false;
-            RedrawAllLines();
-            _canvas.DravLine(_focusLine, _constraintMode);
-            _canvas.UpdateUI();  
+            if (_drav)
+            {
+                _focusLine.ConstraintMode = false;
+                RedrawAllLines();
+                _canvas.DravLine(_focusLine);
+                _canvas.UpdateUI();
+            }
         }
+        
+        if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+        {
+            _dashedMode = false;
+            if (_drav)
+            {
+                _focusLine.DashedMode = false;
+                RedrawAllLines();
+                _canvas.DravLine(_focusLine);
+                _canvas.UpdateUI();         
+            }
+        }
+        
     }
+
+
 }

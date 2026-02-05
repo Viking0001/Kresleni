@@ -7,30 +7,13 @@
         Title="Kresleni">
     
     
-    <Window.Styles>
-
-        <Style Selector="Button.tool">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="Black"/>
-        </Style>
-
-
-        <Style Selector="Button:pointerover">
-            <Setter Property="Background" Value="WhiteSmoke"/>
-        </Style>
-
-        <Style Selector="Button:pressed">
-            <Setter Property="Background" Value="#DDD"/>
-        </Style>
-
-    </Window.Styles>
     
     <Grid RowDefinitions="Auto,*" >
         <Border Grid.Row="0"
                 Background="Red"
                 Padding="10">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <Button Content="Clear" Classes="tool" />
+                <Button Content="Clear" Name="ClearButton" Background="White"/>
             </StackPanel>
         </Border>
         

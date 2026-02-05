@@ -43,6 +43,9 @@ public partial class MainWindow : Window
         KeyDown += Controller.OnKeyDown;
         KeyUp += Controller.OnKeyUp;
 
+
+        ClearButton.Click += (_, _) => Controller.Clear();
+
     }
     
 }

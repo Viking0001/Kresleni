@@ -17,6 +17,8 @@ namespace Kresleni
         public int Height => _bitmap.PixelSize.Height;
         public Image Image => _target;
         public WriteableBitmap Bitmap => _bitmap;
+        
+
 
         public CanvasBitmap(Image target, int width, int height)
         {
@@ -72,17 +74,17 @@ namespace Kresleni
             }
         }
 
-        public void DravLine(Line line, bool constraintMode = false)
+        public void DravLine(Line line)
         {
             Coords first = line.Start;
             Coords second;
-            if (constraintMode) second = line.ConsttraintEnd();
+            if (line.ConstraintMode) second = line.ConsttraintEnd();
             else second = line.End;
             
             int width = line.Width;
             Color? color = line.Color;
             
-            int pixelGap = 10;
+            int pixelGap = line.DashedMode ? 10 : 1;
 
             
 
@@ -193,103 +195,4 @@ namespace Kresleni
 
 
     }
-
-    public class Coords
-    {
-        public int X;
-        public int Y;
-
-        public Coords(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-        
-        public static implicit operator Coords((int x, int y) tuple)
-        {
-            return new Coords(tuple.x, tuple.y);
-        }
-        
-        public static implicit operator Coords((double x, double y) tuple)
-        {
-            return new Coords((int)Math.Round(tuple.x), (int)Math.Round(tuple.y));
-        }
-    }
-
-    public class Color
-    {
-        public byte R => (byte)_r;
-        private int _r; 
-        
-        public byte G => (byte)_g;
-        private int _g; 
-        
-        public byte B => (byte)_b;
-        public int _b;
-        
-        public byte Alpha => (byte)_alpha;
-        public int _alpha;
-
-        public Color(int r, int g, int b, int alpha = 255)
-        {
-            _r = r;
-            _g = g;
-            _b = b;
-            _alpha = alpha;
-        }
-
-        public override string ToString()
-        {
-            return $"({_r},{_g},{_b},{_alpha})";
-        }
-    }
-    
-    
-    public class Line
-    {
-        public Coords Start;
-        public Coords End;
-        public int Width;
-        public Color Color;
-
-        public Line(Coords start, Coords end, int width, Color? color = null)
-        {
-            color ??= new Color(0, 0, 0);
-            
-            Start = start;
-            End = end;
-            Width = width;
-            Color = color;
-        }
-
-        public Coords ConsttraintEnd()
-        {
-                var angle = Math.Atan2(Start.X - End.X, Start.Y - End.Y);
-                if (angle < 0)
-                    angle += 2*Math.PI;
-
-                double length = Math.Sqrt(Math.Pow(Start.X - End.X, 2) + Math.Pow(Start.Y - End.Y, 2));
-
-                double quadrant = Math.PI / 4;
-                double sqrTwo = 1.41;  // 1.41421356237
-                angle += quadrant / 2;
-
-                //if (angle / quadrant % 2 == 0) length /= sqrTwo;
-                //else length = 0;
-                //if (angle / quadrant / 4 == 0) length *= -1;
-                
-                if (angle < quadrant) return (Start.X, Start.Y - (int)length);
-                if (angle < quadrant * 2) return (Start.X - (int)(length / sqrTwo), Start.Y - (int)(length / sqrTwo));
-                if (angle < quadrant * 3) return (Start.X - (int)length, Start.Y);
-                if (angle < quadrant * 4) return (Start.X - (int)(length / sqrTwo), Start.Y + (int)(length / sqrTwo));
-                if (angle < quadrant * 5) return (Start.X, Start.Y + (int)length);
-                if (angle < quadrant * 6) return (Start.X + (int)(length / sqrTwo), Start.Y + (int)(length / sqrTwo));
-                if (angle < quadrant * 7) return (Start.X + (int)length, Start.Y);
-                if (angle < quadrant * 8) return (Start.X + (int)(length / sqrTwo), Start.Y - (int)(length / sqrTwo));
-                return (Start.X, Start.Y - (int)length);
-
-        }
-
-    }
-    
 }
